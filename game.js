@@ -1165,3 +1165,65 @@ if (legalBtn && legalModal && closeLegalBtn) {
         legalModal.classList.add('hidden');
     });
 }
+
+// Sound Test Button
+const soundTestBtn = document.getElementById('sound-test-btn');
+if (soundTestBtn) {
+    soundTestBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 1. Force Init
+        if (!audioContext) initAudio();
+
+        // 2. Force Resume
+        if (audioContext) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    playTestSound();
+                });
+            } else {
+                playTestSound();
+            }
+        } else {
+            alert('エラー: オーディオ機能が使えません (Web Audio API not supported)');
+        }
+    });
+}
+
+function playTestSound() {
+    try {
+        // Use a louder, distinct sound for testing (Square wave)
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+        osc.frequency.linearRampToValueAtTime(880, audioContext.currentTime + 0.1); // Slide up
+
+        // Max Volume
+        gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.5);
+
+        setTimeout(() => {
+            const state = audioContext ? audioContext.state : 'null';
+            alert(
+                `音の信号を送りました！(System: ${state})\n\n` +
+                `【重要】\n` +
+                `YouTubeなどの「動画アプリ」と違って、\n` +
+                `「ブラウザのゲーム」はマナーモード(消音)だと\n` +
+                `完全に音が消えてしまいます。\n\n` +
+                `YouTubeが聞こえても、ここが聞こえない場合は\n` +
+                `『本体のサイレントスイッチ』を必ずOFFにしてください！`
+            );
+        }, 600);
+    } catch (e) {
+        alert('エラー: 再生に失敗しました\n' + e.message);
+    }
+}
