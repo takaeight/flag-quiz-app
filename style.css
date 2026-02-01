@@ -408,8 +408,10 @@ body.is-start-screen .app-container {
     /* Use dvh for mobile browsers */
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    /* justify-content: center; REMOVED to allow margin: auto to handle centering */
-    /* align-items: center; REMOVED to avoid cutting off top content on overflow */
+    flex-direction: column;
+    /* Stack vertically */
+    align-items: center;
+    /* Center horizontally */
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
@@ -418,8 +420,22 @@ body.is-start-screen .app-container {
     overflow-y: auto;
     /* Allow scrolling */
     -webkit-overflow-scrolling: touch;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Pseudo-elements to act as flexible spacers for centering */
+.modal::before,
+.modal::after {
+    content: '';
+    flex-grow: 1;
+    flex-shrink: 0;
+    min-height: max(20px, env(safe-area-inset-top));
+    /* Minimum top spacing */
+    width: 100%;
+}
+
+/* Adjust bottom spacer */
+.modal::after {
+    min-height: max(20px, env(safe-area-inset-bottom));
 }
 
 .modal.visible {
@@ -430,14 +446,17 @@ body.is-start-screen .app-container {
 .modal-content {
     width: 90%;
     max-width: 400px;
-    padding: 40px;
+    padding: 20px 40px;
+    /* Reduced vertical padding slightly */
     text-align: center;
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin: auto;
-    /* Magically centers in flex container but allows scrolling */
+    margin: 0;
+    /* Reset auto margin, managed by spacers */
     flex-shrink: 0;
     /* Prevent shrinking */
+    position: relative;
+    z-index: 1001;
 }
 
 .modal.visible .modal-content {
