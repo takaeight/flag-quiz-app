@@ -312,7 +312,7 @@ body.is-start-screen .app-container {
 /* Mobile specific override just for the flag to go BIG */
 @media (max-width: 480px) {
     #flag-image {
-        max-height: 45vh;
+        max-height: 45vh !important;
         /* AGGRESSIVE: 45% of viewport height */
         width: auto;
         max-width: 100%;
