@@ -1,0 +1,982 @@
+:root {
+    --color-bg-1: #0f172a;
+    --color-bg-2: #1e293b;
+    --color-primary: #38bdf8;
+    /* Light Blue */
+    --color-accent: #f472b6;
+    /* Pink */
+    --color-glass: rgba(255, 255, 255, 0.1);
+    --color-glass-border: rgba(255, 255, 255, 0.2);
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-correct: #4ade80;
+    --color-incorrect: #f87171;
+
+    --font-jp: 'Noto Sans JP', sans-serif;
+    --font-en: 'Outfit', sans-serif;
+
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 8px;
+
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-jp);
+    /* Deep Black Background */
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Background ambient light - Neutral/Cool instead of Pink/Blue */
+body::before {
+    content: '';
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    /* Subtle White/Blue Mist */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
+    top: -20%;
+    left: -10%;
+    z-index: -1;
+    border-radius: 50%;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    width: 50vw;
+    height: 50vw;
+    /* Removed Pink, added subtle dark gray/blue */
+    background: radial-gradient(circle, rgba(30, 41, 59, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    bottom: -10%;
+    right: -10%;
+    z-index: -1;
+    border-radius: 50%;
+}
+
+/* Hide Main App when Start Screen is active to prevent ghosting */
+body.is-start-screen .app-container {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.logo {
+    font-family: var(--font-en);
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.05em;
+    letter-spacing: -0.05em;
+    color: #fff;
+    /* Removed Gradient per user request */
+    /* background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); */
+    /* -webkit-background-clip: text; */
+    /* background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+}
+
+.dot {
+    color: var(--color-text);
+    -webkit-text-fill-color: var(--color-text);
+}
+
+.score-container {
+    background: var(--color-glass);
+    border: 1px solid var(--color-glass-border);
+    padding: 8px 16px;
+    border-radius: 50px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--font-en);
+    backdrop-filter: blur(4px);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-icon {
+    background: var(--color-glass);
+    border: 1px solid var(--color-glass-border);
+    color: var(--color-text);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.score-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 700;
+}
+
+#score-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Glass Card */
+.glass {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius-lg);
+}
+
+.quiz-card {
+    padding: 32px 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Question Header */
+.question-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.question-count {
+    display: inline-block;
+    font-family: var(--font-en);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+}
+
+.instruction {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+}
+
+/* Flag Image */
+.flag-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+    perspective: 1000px;
+}
+
+.flag-wrapper {
+    position: relative;
+    width: auto;
+    height: auto;
+    /* Limit max width to avoid breaking layout on small screens */
+    max-width: 100%;
+    /* Removed aspect-ratio: 4/3 */
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    /* Heroic Shadow/Glow */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
+    background: transparent;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Minimal white border to stand out on dark bg */
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.flag-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+#flag-image {
+    width: auto;
+    height: auto;
+    /* Desktop/Tablet Base Size */
+    max-height: 220px;
+    max-width: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: block;
+    /* Slight drop shadow for the flag itself inside the wrapper if typical rect */
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+#flag-image.loaded {
+    opacity: 1;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Options */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.option-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-family: var(--font-jp);
+    position: relative;
+    overflow: hidden;
+    z-index: 5;
+    pointer-events: auto;
+    touch-action: manipulation;
+    /* Prevent double-tap zoom */
+}
+
+.option-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.option-btn:active {
+    transform: translateY(0);
+}
+
+/* Styles for states */
+/* Styles for states */
+.option-btn.correct {
+    background: rgba(34, 197, 94, 0.8) !important;
+    /* Strong Green */
+    border-color: #15803d !important;
+    color: white !important;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+}
+
+.option-btn.incorrect {
+    background: rgba(239, 68, 68, 0.8) !important;
+    /* Strong Red */
+    border-color: #b91c1c !important;
+    color: white !important;
+    opacity: 0.8;
+}
+
+/* Reveal Correct Answer (when user gets it wrong) */
+/* Reveal Correct Answer (when user gets it wrong) */
+.option-btn.reveal-correct {
+    background: rgba(34, 197, 94, 0.9) !important;
+    border: 3px solid #facc15 !important;
+    /* Yellow border to stand out */
+    color: white !important;
+    font-weight: bold;
+    animation: pulse-correct 0.8s infinite alternate;
+    position: relative;
+    z-index: 20;
+    /* Pop above others */
+    overflow: visible !important;
+    /* Allow badge to show outside */
+}
+
+.option-btn.reveal-correct::after {
+    content: '👈 せいかい！';
+    position: absolute;
+    right: -10px;
+    top: -15px;
+    background: #facc15;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border: 2px solid white;
+}
+
+@keyframes pulse-correct {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    100% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    }
+}
+
+.option-btn.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Feedback */
+.feedback {
+    text-align: center;
+    margin-top: 16px;
+    font-weight: bold;
+    height: 24px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.feedback.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 400px;
+    padding: 40px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal.visible .modal-content {
+    transform: scale(1);
+}
+
+.modal h2 {
+    font-family: var(--font-en);
+    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #fff, #cbd5e1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.final-score {
+    font-family: var(--font-en);
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--color-primary);
+}
+
+.score-total {
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+}
+
+#result-comment {
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+}
+
+.btn-primary {
+    background: rgba(255, 255, 255, 0.1);
+    /* Simple Glass */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 12px 32px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-family: var(--font-jp);
+    backdrop-filter: blur(5px);
+    position: relative;
+    /* Ensure z-index works */
+    z-index: 10;
+    pointer-events: auto;
+    /* Explicitly allow clicks */
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    /* Golden/Orange Gradient */
+    border-color: #fcd34d;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+    /* Golden Glow */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-text {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-top: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.8;
+    transition: all 0.2s;
+    font-family: var(--font-jp);
+}
+
+.btn-text:hover {
+    color: var(--color-text);
+    opacity: 1;
+}
+
+/* Utility */
+.hidden {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 16px;
+    }
+
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Make buttons larger for easier tapping on mobile/iPad split view */
+    .option-btn {
+        padding: 20px;
+        font-size: 1.1rem;
+    }
+
+    /* Mobile Flag Adjustment */
+    #flag-image {
+        max-height: 180px;
+        /* Slightly smaller on mobile but still large */
+    }
+
+    /* Calendar Mobile Tweaks */
+    .calendar-grid {
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .calendar-day {
+        font-size: 0.8rem;
+    }
+
+    .calendar-day.played::after {
+        font-size: 1.5rem;
+        /* Smaller Hanamaru */
+    }
+
+    .daily-score {
+        font-size: 0.75rem;
+    }
+}
+
+/* Tablet/iPad specific */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .app-container {
+        max-width: 700px;
+    }
+
+    .option-btn {
+        min-height: 80px;
+        /* Large touch target */
+        font-size: 1.3rem;
+    }
+}
+
+/* Feedback Overlay - Fullscreen Flash Mode */
+.feedback-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    transform: none;
+    /* Reset transform */
+    font-size: 10rem;
+    /* Larger icon */
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    display: none;
+}
+
+.feedback-overlay.show {
+    display: flex;
+}
+
+/* Direct Text Styles & Background Flash */
+.feedback-overlay.correct {
+    color: var(--color-correct);
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.8);
+    background: rgba(74, 222, 128, 0.2);
+    /* Green Flash */
+}
+
+.feedback-overlay.incorrect {
+    color: var(--color-incorrect);
+    text-shadow: 0 0 20px rgba(248, 113, 113, 0.8);
+    background: rgba(248, 113, 113, 0.2);
+    /* Red Flash */
+}
+
+/* End of file */
+
+
+/* Start Screen */
+.logo-large {
+    font-family: var(--font-en);
+    font-size: 4rem;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    line-height: 1;
+    color: #fff;
+    /* Removed Gradient per user request */
+    /* background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); */
+    /* -webkit-background-clip: text; */
+    /* background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+}
+
+.difficulty-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.btn-large {
+    padding: 20px 32px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+.btn-secondary {
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    /* Green for Yukkuri */
+    border: none;
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+    transition: all 0.3s ease;
+    font-family: var(--font-jp);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.5);
+}
+
+/* Hard Mode Grid (3 columns) */
+.options-grid.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.options-grid.grid-3 .option-btn {
+    padding: 12px;
+    font-size: 0.9rem;
+    min-height: 60px;
+}
+
+/* Time Limit Bar for Super Mode */
+.timer-bar-visual {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 8px;
+    background: #f43f5e;
+    width: 0%;
+    transition: width linear;
+    display: none !important;
+}
+
+body.mode-extreme .timer-bar-visual {
+    display: block !important;
+}
+
+.timer-bar-visual.active {
+    width: 100%;
+    /* Transition duration will be set primarily via JS or dynamic style,
+       but default fallback here */
+}
+
+/* Calendar Styles */
+.btn-calendar {
+    margin-top: 24px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--color-text-muted);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: var(--font-jp);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-calendar:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.calendar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: var(--color-primary);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    position: relative;
+}
+
+.calendar-day.today {
+    background: rgba(56, 189, 248, 0.2);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.calendar-day.played {
+    background: rgba(74, 222, 128, 0.2);
+    border: 1px solid var(--color-correct);
+    color: var(--color-correct);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Replaced usage of ::after with real DOM element .daily-score */
+
+.daily-score {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fbbf24;
+    /* Gold */
+    text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+    line-height: 1;
+}
+
+.calendar-day.perfect {
+    background: rgba(251, 191, 36, 0.2);
+    /* Gold BG */
+    border-color: #fbbf24;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+}
+
+/* Difficulty Button Colors - Defaults to btn-primary style */
+/* Specific colors removed as per user request */
+
+/* Start Screen Subtitle - Turquoise */
+.subtitle-large {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    color: #fff;
+    /* White per user request */
+    /* color: #40E0D0; Turquoise */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Ensure Home Button is Visible */
+.btn-icon {
+    display: flex !important;
+}
+
+
+
+/* Start Screen Logo Wrapper (Globe + Text) - Round V2 */
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    /* Slightly tighter gap */
+    margin-bottom: 24px;
+}
+
+.logo-globe {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    /* Ensure no stretching */
+    border-radius: 50%;
+    /* STRICT CIRCLE - Cuts off corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    /* Nice depth shadow */
+    animation: rotateGlobe 20s linear infinite;
+    /* Slow rotation effect */
+}
+
+.logo-text-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Adjust logo-large and subtitle spacing when inside wrapper */
+.logo-wrapper .logo-large {
+    margin: 0;
+    line-height: 1;
+    font-size: 5rem;
+}
+
+.logo-wrapper .subtitle-large {
+    margin: 15px 0 0 5px;
+    /* Increased top spacing */
+}
+
+@keyframes rotateGlobe {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* -------------------------------------------------- */
+/* 🌎 3D ROTATING GLOBE (CSS ONLY)                     */
+/* -------------------------------------------------- */
+
+/* 🌎 3D ROTATING GLOBE (Three.js) */
+#globe-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50%;
+    /* Keep the shadow/depth effects on the container or canvas */
+}
+
+/* Container handles dimensions (90px) */
+.globe-container {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    background: transparent;
+}
+
+
+
+/* Remove old static styles if any collide (logo-globe is gone) */
+
+/* Calendar Button (Sub Button) */
+.btn-sub {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-family: var(--font-jp);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    /* Ensure it doesn't stretch */
+}
+
+.btn-sub:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Footer on Start Screen */
+.start-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.btn-text-small {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.btn-text-small:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Legal Modal Specifics */
+.legal-content .scrollable-text {
+    max-height: 50vh;
+    overflow-y: auto;
+    text-align: left;
+    padding: 0 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.legal-content h3 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #0284c7;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.3rem;
+}
+
+.legal-content p {
+    margin-bottom: 1rem;
+}
+
+/* Scrollbar for legal text */
+.scrollable-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-text::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.scrollable-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
