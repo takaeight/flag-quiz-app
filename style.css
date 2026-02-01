@@ -231,6 +231,13 @@ body.is-start-screen .app-container {
     margin-bottom: 24px;
 }
 
+@media (max-width: 480px) {
+    .question-header {
+        margin-bottom: 12px;
+        /* Tighter on mobile to give space to flag */
+    }
+}
+
 .question-count {
     display: inline-block;
     font-family: var(--font-en);
@@ -305,17 +312,22 @@ body.is-start-screen .app-container {
 /* Mobile specific override just for the flag to go BIG */
 @media (max-width: 480px) {
     #flag-image {
-        max-height: 35vh;
-        /* HUGE on mobile - up to 35% of viewport height */
+        max-height: 45vh;
+        /* AGGRESSIVE: 45% of viewport height */
         width: auto;
         max-width: 100%;
+        object-fit: contain;
     }
 
     .flag-wrapper {
-        max-height: 40vh;
-        /* Allow wrapper to grow too */
+        max-height: 50vh;
+        /* Allow wrapper to grow to half screen */
         width: 100%;
-        /* Take full width if aspect ratio allows */
+        /* Remove fixed border if it constrains too much, 
+           or keep it but ensure it wraps tightly */
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
