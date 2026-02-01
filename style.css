@@ -1045,52 +1045,66 @@ body.mode-extreme .timer-bar-visual {
     /* QUIZ SECTION MOBILE OPTIMIZATIONS (Compact Mode) */
     /* ------------------------------------------------ */
     .quiz-card {
-        padding: 16px 16px 24px 16px;
-        /* Reduced top/bottom padding */
+        padding: 12px 12px 20px 12px;
+        /* Further reduced padding */
     }
 
     .app-header {
-        margin-bottom: 12px;
-        /* Tighter header spacing */
+        margin-bottom: 8px;
+        /* Minimal header spacing */
+        flex-wrap: nowrap;
+        /* Prevent wrapping */
+    }
+
+    /* Make logo smaller in header */
+    .logo {
+        font-size: 1.5rem;
     }
 
     .question-header {
-        margin-bottom: 12px;
-        /* Tighter question spacing */
+        margin-bottom: 8px;
+        /* Minimal question spacing */
     }
 
     .question-count {
-        font-size: 0.8rem;
-        padding: 2px 10px;
-        margin-bottom: 4px;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        margin-bottom: 2px;
     }
 
     .instruction {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        /* Smaller instruction text */
     }
 
-    /* Shrink Flag for Mobile */
+    /* Shrink Flag for Mobile - AGGRESSIVE */
     .flag-container {
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 
     #flag-image {
-        max-height: 140px;
-        /* Force smaller flag on mobile */
+        max-height: 100px;
+        /* Very small to ensure buttons fit */
     }
 
     /* Compact Options Grid */
     .options-grid {
-        gap: 8px;
+        gap: 6px;
         /* Tighter gap */
     }
 
     .option-btn {
-        padding: 12px 8px;
-        /* Compact padding */
-        font-size: 0.95rem;
-        /* Slightly smaller text */
+        padding: 10px 4px;
+        /* Very compact padding */
+        font-size: 0.9rem;
+        /* Smaller text */
         min-height: auto;
-        /* Allow auto height */
+        line-height: 1.2;
+    }
+
+    /* Timer specific for mobile space */
+    .timer-bar-visual {
+        height: 4px;
+        /* Thinner timer */
     }
 }
