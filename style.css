@@ -397,7 +397,7 @@ body.is-start-screen .app-container {
 }
 
 /* Modal */
-/* Modal */
+/* Modal - Simplified Block Layout for Maximum Safety */
 .modal {
     position: fixed;
     top: 0;
@@ -405,37 +405,36 @@ body.is-start-screen .app-container {
     width: 100%;
     height: 100%;
     height: 100dvh;
-    /* Use dvh for mobile browsers */
     background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    /* Stack vertically */
-    align-items: center;
-    /* Center horizontally */
+
+    /* Reset Flex and use standard flow */
+    display: block;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* Ensure padding for safe areas */
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    /* Include padding in width/height */
+
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(5px);
-    overflow-y: auto;
-    /* Allow scrolling */
-    -webkit-overflow-scrolling: touch;
+
+    /* Center content horizontally */
+    text-align: center;
 }
 
-/* Pseudo-elements to act as flexible spacers for centering */
+/* Remove pseudo-elements used for flex centering */
 .modal::before,
 .modal::after {
-    content: '';
-    flex-grow: 1;
-    flex-shrink: 0;
-    min-height: max(20px, env(safe-area-inset-top));
-    /* Minimum top spacing */
-    width: 100%;
-}
-
-/* Adjust bottom spacer */
-.modal::after {
-    min-height: max(20px, env(safe-area-inset-bottom));
+    content: none;
+    display: none;
 }
 
 .modal.visible {
@@ -444,19 +443,19 @@ body.is-start-screen .app-container {
 }
 
 .modal-content {
-    width: 90%;
+    /* Auto margins for horizontal centering, explicit margin for vertical spacing */
+    margin: 40px auto;
+
+    width: 100%;
     max-width: 400px;
-    padding: 20px 40px;
-    /* Reduced vertical padding slightly */
-    text-align: center;
-    transform: scale(0.9);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin: 0;
-    /* Reset auto margin, managed by spacers */
-    flex-shrink: 0;
-    /* Prevent shrinking */
+    padding: 24px;
+
     position: relative;
     z-index: 1001;
+
+    /* Keep animation but be careful */
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal.visible .modal-content {
