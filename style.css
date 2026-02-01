@@ -296,6 +296,29 @@ body.is-start-screen .app-container {
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
+/* Base style for Desktop/Tablet (default) */
+#flag-image {
+    max-height: 250px;
+    /* Slightly larger on desktop too */
+}
+
+/* Mobile specific override just for the flag to go BIG */
+@media (max-width: 480px) {
+    #flag-image {
+        max-height: 35vh;
+        /* HUGE on mobile - up to 35% of viewport height */
+        width: auto;
+        max-width: 100%;
+    }
+
+    .flag-wrapper {
+        max-height: 40vh;
+        /* Allow wrapper to grow too */
+        width: 100%;
+        /* Take full width if aspect ratio allows */
+    }
+}
+
 #flag-image.loaded {
     opacity: 1;
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
