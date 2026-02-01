@@ -27,12 +27,22 @@ body {
     font-family: var(--font-jp);
     /* Deep Black Background */
     background: radial-gradient(circle at center, #1a1a1a, #000000);
+    background-attachment: fixed;
+    /* Ensure background stays fixed */
     color: var(--color-text);
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Dynamic Viewport Height for Mobile */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    /* justify-content: center;  <-- REMOVED to prevent floating in the middle */
+    /* align-items: center;      <-- REMOVED to allow full width usage */
     overflow-x: hidden;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    box-sizing: border-box;
 }
 
 /* Background ambient light - Neutral/Cool instead of Pink/Blue */
@@ -72,8 +82,19 @@ body.is-start-screen .app-container {
 .app-container {
     width: 100%;
     max-width: 500px;
+    margin: 0 auto;
+    /* Center horizontally */
     padding: 20px;
     box-sizing: border-box;
+    /* Ensure it takes enough space to look good, but doesn't force scroll unnecessarily */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Start from top */
+    min-height: 100%;
+    /* Fallback */
+    /* Adjust for small screens vs big screens */
+    flex-grow: 1;
 }
 
 /* Header */
@@ -81,7 +102,10 @@ body.is-start-screen .app-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+    /* Reduced from 24px for tighter top */
+    flex-shrink: 0;
+    /* Don't shrink header */
 }
 
 .logo {
@@ -169,6 +193,19 @@ body.is-start-screen .app-container {
     padding: 32px 24px;
     position: relative;
     overflow: hidden;
+    /* On mobile, we might want this to expand a bit more if needed, 
+       but keeping it contained is usually safer for this design. */
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    /* Spacer at bottom */
+
+    /* Flex grow to fill space for balance */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content vertically within the card */
 }
 
 /* Progress Bar */
@@ -417,7 +454,11 @@ body.is-start-screen .app-container {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
-    padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
+    /* Handle Safe Areas for Modal */
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
     box-sizing: border-box;
 
     z-index: 1000;
