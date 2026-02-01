@@ -397,7 +397,7 @@ body.is-start-screen .app-container {
 }
 
 /* Modal */
-/* Modal - Simplified Block Layout for Maximum Safety */
+/* Modal - Restore Premium Flex Centering */
 .modal {
     position: fixed;
     top: 0;
@@ -407,30 +407,28 @@ body.is-start-screen .app-container {
     height: 100dvh;
     background: rgba(0, 0, 0, 0.8);
 
-    /* Reset Flex and use standard flow */
-    display: block;
+    /* Flex Centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Centers vertically */
+
+    /* Scroll fallback */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
-    /* Ensure padding for safe areas */
-    padding-top: max(20px, env(safe-area-inset-top));
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
     box-sizing: border-box;
-    /* Include padding in width/height */
 
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(5px);
-
-    /* Center content horizontally */
-    text-align: center;
 }
 
-/* Remove pseudo-elements used for flex centering */
+/* Pseudo-elements removed as we trust margin: auto for overflow safe-guarding if needed, 
+   but cleaner to just fit the content */
 .modal::before,
 .modal::after {
     content: none;
@@ -443,19 +441,21 @@ body.is-start-screen .app-container {
 }
 
 .modal-content {
-    /* Auto margins for horizontal centering, explicit margin for vertical spacing */
-    margin: 40px auto;
-
     width: 100%;
     max-width: 400px;
-    padding: 24px;
-
-    position: relative;
-    z-index: 1001;
-
-    /* Keep animation but be careful */
+    padding: 32px;
+    text-align: center;
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Ensure it doesn't touch edges roughly */
+    margin: auto;
+    flex-shrink: 0;
+    /* Don't squash */
+    max-height: 100dvh;
+    /* Protection against content overflow */
+    overflow-y: auto;
+    /* Allow scrolling if content exceeds max-height */
 }
 
 .modal.visible .modal-content {
