@@ -548,48 +548,45 @@ function initAudio() {
 }
 
 /**
- * 🔓 Unlock Audio (iOS Fix)
- * Silent play on first touch to wake up the Audio Engine
+ * 🔓 Unlock Audio (iOS Fix - Ultimate Edition)
+ * Try every trick to bypass Silent Mode
  */
 function unlockAudio() {
+    // 1. Init Web Audio
     if (!audioContext) initAudio();
-    if (!audioContext) return;
 
-    if (audioContext.state === 'running') {
-        // Already running, no need to keep listeners
-        document.removeEventListener('click', unlockAudio);
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('keydown', unlockAudio);
-        return;
+    // 2. iOS 17+ Audio Session API
+    if (navigator.audioSession) {
+        navigator.audioSession.type = 'playback';
+        console.log("Set AudioSession to Playback");
     }
 
-    if (audioContext.state === 'suspended') {
+    // 3. The "Silent HTML5 Audio" Trick
+    const silentAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAA==");
+    silentAudio.loop = false;
+    silentAudio.play().then(() => {
+        console.log("Silent HTML5 Audio Played");
+    }).catch(e => {
+        console.warn("Silent Audio Play failed", e);
+    });
+
+    // 4. Resume Web Audio Context
+    if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume().then(() => {
             console.log('AudioContext resumed via unlock');
-            // Check again to remove listeners
-            if (audioContext.state === 'running') {
-                document.removeEventListener('click', unlockAudio);
-                document.removeEventListener('touchstart', unlockAudio);
-                document.removeEventListener('keydown', unlockAudio);
-            }
         }).catch(e => console.error(e));
     }
 
-    // Play silent buffer to force iOS audio stack to wake up
-    try {
-        const buffer = audioContext.createBuffer(1, 1, 22050);
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioContext.destination);
-        source.start(0);
-        console.log('Audio Unlocked (Silent Play)');
-    } catch (e) {
-        console.error('Audio unlock failed', e);
+    // 5. Cleanup Listeners ONLY if successfully running
+    if (audioContext && audioContext.state === 'running') {
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
     }
 }
 
 // Attach Unlock Listeners Global (Passive: false for mobile)
-const unlockOptions = { once: false, passive: false }; // Keep trying until success
+const unlockOptions = { once: false, passive: false };
 document.addEventListener('click', unlockAudio, unlockOptions);
 document.addEventListener('touchstart', unlockAudio, unlockOptions);
 document.addEventListener('keydown', unlockAudio, unlockOptions);
