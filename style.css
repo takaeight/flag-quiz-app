@@ -397,21 +397,29 @@ body.is-start-screen .app-container {
 }
 
 /* Modal */
+/* Modal */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    height: 100dvh;
+    /* Use dvh for mobile browsers */
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    /* justify-content: center; REMOVED to allow margin: auto to handle centering */
+    /* align-items: center; REMOVED to avoid cutting off top content on overflow */
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(5px);
+    overflow-y: auto;
+    /* Allow scrolling */
+    -webkit-overflow-scrolling: touch;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .modal.visible {
@@ -426,6 +434,10 @@ body.is-start-screen .app-container {
     text-align: center;
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin: auto;
+    /* Magically centers in flex container but allows scrolling */
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .modal.visible .modal-content {
