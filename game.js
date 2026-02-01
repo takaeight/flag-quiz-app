@@ -529,6 +529,9 @@ closeCalendarBtn.addEventListener('click', () => {
 /**
  * Initialize AudioContext
  */
+/**
+ * Initialize AudioContext
+ */
 function initAudio() {
     if (audioContext) return; // Already initialized
 
@@ -545,6 +548,53 @@ function initAudio() {
 }
 
 /**
+ * 🔓 Unlock Audio (iOS Fix)
+ * Silent play on first touch to wake up the Audio Engine
+ */
+function unlockAudio() {
+    if (!audioContext) initAudio();
+    if (!audioContext) return;
+
+    if (audioContext.state === 'running') {
+        // Already running, no need to keep listeners
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
+        return;
+    }
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+            console.log('AudioContext resumed via unlock');
+            // Check again to remove listeners
+            if (audioContext.state === 'running') {
+                document.removeEventListener('click', unlockAudio);
+                document.removeEventListener('touchstart', unlockAudio);
+                document.removeEventListener('keydown', unlockAudio);
+            }
+        }).catch(e => console.error(e));
+    }
+
+    // Play silent buffer to force iOS audio stack to wake up
+    try {
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+        console.log('Audio Unlocked (Silent Play)');
+    } catch (e) {
+        console.error('Audio unlock failed', e);
+    }
+}
+
+// Attach Unlock Listeners Global (Passive: false for mobile)
+const unlockOptions = { once: false, passive: false }; // Keep trying until success
+document.addEventListener('click', unlockAudio, unlockOptions);
+document.addEventListener('touchstart', unlockAudio, unlockOptions);
+document.addEventListener('keydown', unlockAudio, unlockOptions);
+
+/**
  * Play Sound Effect
  */
 function playSound(type) {
@@ -552,9 +602,13 @@ function playSound(type) {
     if (!audioContext) return; // If initialization failed, cannot play sound
 
     if (audioContext.state === 'suspended') {
-        audioContext.resume();
+        audioContext.resume().catch(e => console.error(e));
     }
 
+    // Safety: If resume is still pending, we might want to wait, but usually fire-and-forget works better for UI sounds
+    // unless we want perfect timing. For this quiz, immediate feedback is preferred even if slightly clipped.
+
+    // Create new context nodes
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -1078,30 +1132,20 @@ function shuffleArray(array) {
     }
 }
 
-// Event Listeners
-modeEasyBtn.addEventListener('click', () => startGame('easy'));
-modeNormalBtn.addEventListener('click', () => startGame('normal'));
-modeHardBtn.addEventListener('click', () => startGame('hard'));
-modeSuperBtn.addEventListener('click', () => startGame('super'));
-modeExtremeBtn.addEventListener('click', () => startGame('extreme'));
+// Event Listeners (Accessory Buttons)
+// Note: Mode buttons and Restart button are already handled above. duplicate listeners removed.
 
-restartBtn.addEventListener('click', () => {
-    // Show start screen again on restart
-    resultModal.classList.remove('visible');
-    startScreen.classList.add('visible');
-});
+// Calendar Events (Secondary Listener if needed, but primary is above. Let's keep this one if it's safe or remove if duplicate)
+// Lines 500-504 already handle calendarBtn. checking...
+// Yes, line 500: calendarBtn.addEventListener...
+// So we remove these duplicates too.
 
-// Calendar Events
-calendarBtn.addEventListener('click', () => {
-    renderCalendar();
-    calendarModal.classList.remove('hidden');
-    calendarModal.classList.add('visible');
-});
+// Legal Modal Events
+// (These seem to be only defined here, so we keep them)
+// Wait, legal events are lines 1144+.
 
-closeCalendarBtn.addEventListener('click', () => {
-    calendarModal.classList.remove('visible');
-    calendarModal.classList.add('hidden');
-});
+// Removing lines 1118-1141 which are duplicates of lines 420, 500, 524
+
 
 // Legal Modal Events
 const legalBtn = document.getElementById('legal-btn');
