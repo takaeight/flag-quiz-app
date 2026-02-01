@@ -127,6 +127,14 @@
                 <h2>やったね！カレンダー</h2>
                 <button id="close-calendar" class="btn-close">×</button>
             </div>
+            <style>
+                @media (max-width: 480px) {
+                    .modal-header h2 {
+                        font-size: 1.5rem !important;
+                        /* Smaller on mobile to prevent wrapping */
+                    }
+                }
+            </style>
             <div id="calendar-month-year" class="calendar-title">2023年 10月</div>
             <div class="calendar-grid" id="calendar-grid">
                 <!-- Days will be injected here -->
