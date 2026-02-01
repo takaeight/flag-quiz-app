@@ -913,32 +913,34 @@ body.mode-extreme .timer-bar-visual {
 
 /* Adjust logo-large and subtitle spacing when inside wrapper */
 .logo-wrapper .logo-large {
-    margin: 0;
-    line-height: 1;
+    margin: 10px 0 0 0;
+    /* Move down slightly */
+    line-height: 0.95;
+    /* Tighter line height */
     font-size: 5.5rem;
-    /* Increased from ~5rem */
     letter-spacing: -2px;
-    /* Tighter for punchy look */
 }
 
 .logo-wrapper .subtitle-large {
-    margin: 10px 0 0 5px;
+    margin: 5px 0 0 5px;
+    /* Reduced to bring closer to logo */
     font-size: 1.3rem;
-    /* Increased from 1.1rem */
     font-weight: 700;
     letter-spacing: 1px;
-    /* Better readability for small kana */
 }
 
 /* Mobile Specific Adjustments for the Logo */
 @media (max-width: 480px) {
     .logo-wrapper .logo-large {
         font-size: 4.8rem;
-        /* Use a very large size for mobile */
+        margin-top: 15px;
+        /* More explicit spacing on mobile */
     }
 
     .logo-wrapper .subtitle-large {
         font-size: 1.1rem;
+        margin-top: 5px;
+        /* Keep tight spacing */
     }
 }
 
