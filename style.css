@@ -915,12 +915,31 @@ body.mode-extreme .timer-bar-visual {
 .logo-wrapper .logo-large {
     margin: 0;
     line-height: 1;
-    font-size: 5rem;
+    font-size: 5.5rem;
+    /* Increased from ~5rem */
+    letter-spacing: -2px;
+    /* Tighter for punchy look */
 }
 
 .logo-wrapper .subtitle-large {
-    margin: 15px 0 0 5px;
-    /* Increased top spacing */
+    margin: 10px 0 0 5px;
+    font-size: 1.3rem;
+    /* Increased from 1.1rem */
+    font-weight: 700;
+    letter-spacing: 1px;
+    /* Better readability for small kana */
+}
+
+/* Mobile Specific Adjustments for the Logo */
+@media (max-width: 480px) {
+    .logo-wrapper .logo-large {
+        font-size: 4.8rem;
+        /* Use a very large size for mobile */
+    }
+
+    .logo-wrapper .subtitle-large {
+        font-size: 1.1rem;
+    }
 }
 
 @keyframes rotateGlobe {
