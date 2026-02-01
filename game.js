@@ -1190,36 +1190,44 @@ if (soundTestBtn) {
 
 function playTestSound() {
     try {
-        // Use a louder, distinct sound for testing (Square wave)
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+        // 1. Web Audio Beep (Square Wave)
+        if (audioContext && audioContext.state === 'running') {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(440, audioContext.currentTime);
+            osc.frequency.linearRampToValueAtTime(880, audioContext.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.5);
+        }
 
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(440, audioContext.currentTime); // A4
-        osc.frequency.linearRampToValueAtTime(880, audioContext.currentTime + 0.1); // Slide up
-
-        // Max Volume
-        gain.gain.setValueAtTime(0.5, audioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
-
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-
-        osc.start();
-        osc.stop(audioContext.currentTime + 0.5);
+        // 2. Speech Synthesis (Voice Test)
+        // This often bypasses different restrictions or confirms system volume
+        if ('speechSynthesis' in window) {
+            const utter = new SpeechSynthesisUtterance('おとの、テストです。');
+            utter.lang = 'ja-JP';
+            utter.volume = 1.0;
+            window.speechSynthesis.cancel(); // Reset
+            window.speechSynthesis.speak(utter);
+        }
 
         setTimeout(() => {
             const state = audioContext ? audioContext.state : 'null';
             alert(
-                `音の信号を送りました！(System: ${state})\n\n` +
-                `【重要】\n` +
-                `YouTubeなどの「動画アプリ」と違って、\n` +
-                `「ブラウザのゲーム」はマナーモード(消音)だと\n` +
-                `完全に音が消えてしまいます。\n\n` +
-                `YouTubeが聞こえても、ここが聞こえない場合は\n` +
-                `『本体のサイレントスイッチ』を必ずOFFにしてください！`
+                `信号を送りました！(System: ${state})\n\n` +
+                `【確認】\n` +
+                `「電子音」または「話し声」は聞こえましたか？\n\n` +
+                `もし【声だけ】聞こえる場合：\n` +
+                `→ ゲームの音も出る可能性があります。\n\n` +
+                `もし【何も聞こえない】場合：\n` +
+                `→ 100%「マナーモード」か「消音」になっています！\n` +
+                `→ 本体横のスイッチをOFFにするか、コントロールセンターでベルのマークを確認してください。`
             );
-        }, 600);
+        }, 1000); // Wait a bit for voice to start
     } catch (e) {
         alert('エラー: 再生に失敗しました\n' + e.message);
     }
