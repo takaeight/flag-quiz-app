@@ -971,6 +971,7 @@ body.mode-extreme .timer-bar-visual {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 }
+
 /* MOBILE OPTIMIZATIONS to FIT SCREEN - Moved to END for Specificity */
 @media (max-width: 480px) {
     .app-container {
@@ -1009,32 +1010,87 @@ body.mode-extreme .timer-bar-visual {
     /* Start Screen Mobile Tweaks */
     /* Only apply these if the logo-large class exists */
     .logo-large {
-        font-size: 2.5rem !important; /* Force override just in case */
+        font-size: 2.5rem !important;
+        /* Force override just in case */
         margin-bottom: 16px;
     }
-    
+
     /* Shrink Buttons */
     .btn-large {
-        padding: 14px 20px !important; 
+        padding: 14px 20px !important;
         font-size: 1rem !important;
     }
-    
+
     .difficulty-buttons {
-        gap: 10px; 
+        gap: 10px;
         margin-top: 20px;
     }
-    
+
     /* Tighter Modal Padding */
     .modal-content {
         padding: 20px 16px;
         width: 95%;
         max-width: 100%;
-        margin: auto; /* Ensure centering works */
+        margin: auto;
+        /* Ensure centering works */
     }
-    
+
     /* Adjust Globe if present */
     .globe-container {
         transform: scale(0.8);
         margin-bottom: -10px;
+    }
+
+    /* ------------------------------------------------ */
+    /* QUIZ SECTION MOBILE OPTIMIZATIONS (Compact Mode) */
+    /* ------------------------------------------------ */
+    .quiz-card {
+        padding: 16px 16px 24px 16px;
+        /* Reduced top/bottom padding */
+    }
+
+    .app-header {
+        margin-bottom: 12px;
+        /* Tighter header spacing */
+    }
+
+    .question-header {
+        margin-bottom: 12px;
+        /* Tighter question spacing */
+    }
+
+    .question-count {
+        font-size: 0.8rem;
+        padding: 2px 10px;
+        margin-bottom: 4px;
+    }
+
+    .instruction {
+        font-size: 1rem;
+    }
+
+    /* Shrink Flag for Mobile */
+    .flag-container {
+        margin-bottom: 16px;
+    }
+
+    #flag-image {
+        max-height: 140px;
+        /* Force smaller flag on mobile */
+    }
+
+    /* Compact Options Grid */
+    .options-grid {
+        gap: 8px;
+        /* Tighter gap */
+    }
+
+    .option-btn {
+        padding: 12px 8px;
+        /* Compact padding */
+        font-size: 0.95rem;
+        /* Slightly smaller text */
+        min-height: auto;
+        /* Allow auto height */
     }
 }
