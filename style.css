@@ -545,46 +545,7 @@ body.is-start-screen .app-container {
     display: none;
 }
 
-@media (max-width: 480px) {
-    .app-container {
-        padding: 16px;
-    }
 
-    .options-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Make buttons larger for easier tapping on mobile/iPad split view */
-    .option-btn {
-        padding: 20px;
-        font-size: 1.1rem;
-    }
-
-    /* Mobile Flag Adjustment */
-    #flag-image {
-        max-height: 180px;
-        /* Slightly smaller on mobile but still large */
-    }
-
-    /* Calendar Mobile Tweaks */
-    .calendar-grid {
-        gap: 6px;
-        padding: 12px;
-    }
-
-    .calendar-day {
-        font-size: 0.8rem;
-    }
-
-    .calendar-day.played::after {
-        font-size: 1.5rem;
-        /* Smaller Hanamaru */
-    }
-
-    .daily-score {
-        font-size: 0.75rem;
-    }
-}
 
 /* Tablet/iPad specific */
 @media (min-width: 481px) and (max-width: 1024px) {
@@ -1009,4 +970,71 @@ body.mode-extreme .timer-bar-visual {
 .scrollable-text::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
+}
+/* MOBILE OPTIMIZATIONS to FIT SCREEN - Moved to END for Specificity */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 16px;
+    }
+
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Make buttons larger for easier tapping on mobile/iPad split view */
+    .option-btn {
+        padding: 20px;
+        font-size: 1.1rem;
+    }
+
+    /* Mobile Flag Adjustment */
+    #flag-image {
+        max-height: 180px;
+    }
+
+    /* Calendar Mobile Tweaks */
+    .calendar-grid {
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .calendar-day {
+        font-size: 0.8rem;
+    }
+
+    .daily-score {
+        font-size: 0.75rem;
+    }
+
+    /* Start Screen Mobile Tweaks */
+    /* Only apply these if the logo-large class exists */
+    .logo-large {
+        font-size: 2.5rem !important; /* Force override just in case */
+        margin-bottom: 16px;
+    }
+    
+    /* Shrink Buttons */
+    .btn-large {
+        padding: 14px 20px !important; 
+        font-size: 1rem !important;
+    }
+    
+    .difficulty-buttons {
+        gap: 10px; 
+        margin-top: 20px;
+    }
+    
+    /* Tighter Modal Padding */
+    .modal-content {
+        padding: 20px 16px;
+        width: 95%;
+        max-width: 100%;
+        margin: auto; /* Ensure centering works */
+    }
+    
+    /* Adjust Globe if present */
+    .globe-container {
+        transform: scale(0.8);
+        margin-bottom: -10px;
+    }
 }
